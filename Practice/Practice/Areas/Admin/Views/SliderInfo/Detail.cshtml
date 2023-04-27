@@ -1,0 +1,22 @@
+﻿@model SliderInfo
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div class="col-lg-6 ">
+    <h2 class="my-3">Detail</h2>
+    <div class="card mt-5" style="width: 18rem;">
+        <img class="card-img-top img" src="~/img/@Model.SignatureImage" alt="Card image cap"/>
+        <div class="card-body">
+            <p class="card-title">@Html.Raw(Model.Title)</p>
+            <p class="card-text">@Model.Description</p>
+        </div>
+       
+    </div>
+    <div class="back">
+        <a class="btn btn-primary btn-rounded btn-w mt-3" asp-action="Index">
+            Go to list
+        </a>
+    </div>
+</div>
+

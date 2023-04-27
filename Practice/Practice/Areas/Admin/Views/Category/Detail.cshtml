@@ -1,0 +1,15 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Detail";
+}
+<div class="container mt-5">
+    <h1>Create</h1>
+        <div class="form-group mt-5">
+        <input style="background-color: black;" class="form-control" type="text" id="formFile" asp-for="Name" disabled="disabled">
+        </div>
+    <div class="back">
+        <a class="btn btn-primary btn-rounded btn-w my-5" asp-action="Index">
+          Go to list
+        </a>
+    </div>
+</div>

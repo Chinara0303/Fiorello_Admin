@@ -1,0 +1,55 @@
+﻿
+@model List<BasketVM>
+
+<div class="cart-total">
+    <span class="text-number">
+        @Model.Count
+    </span>
+    <span class="text-item">
+        Shopping Cart
+    </span>
+    <span class="price">
+        @{
+            double total = 0;
+
+            //foreach (BasketVM basketVM in Model)
+            //{
+            //    total += (basketVM.Count * basketVM.Price);
+            //}
+        }
+
+        £@total.ToString("F2")
+        <i class="fas fa-chevron-down"></i>
+    </span>
+</div>
+@*<div class="cart-dropdown-block">
+    @foreach (BasketVM basketVM in Model)
+    {
+        <div class=" single-cart-block ">
+            <div class="cart-product">
+                <a href="~/product-details.html" class="image">
+                    <img src="~/image/products/@basketVM.MainImage" alt="">
+                </a>
+                <div class="content">
+                    <h3 class="title">
+                        <a href="~/product-details.html">
+                            @basketVM.GenreName @basketVM.Title
+                        </a>
+                    </h3>
+                    <p class="price"><span class="qty">@basketVM.Count ×</span> £@basketVM.Price.ToString("F2")</p>
+                    <button class="cross-btn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="single-cart-block ">
+        <div class="btn-block">
+            <a asp-controller="Basket" asp-action="Index" class="btn">
+                View Cart <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="~/checkout.html" class="btn btn--primary">
+                Check Out <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</div>*@

@@ -1,0 +1,42 @@
+﻿@model SliderInfo
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="container mt-5">
+    <h1>Slider Create</h1>
+    <form class="forms-sample" method="post" asp-action="Create" enctype="multipart/form-data">
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Choose a new image </label>
+            <input class="form-control" id="formFile" asp-for="SignaturePhoto">
+            <span class="text-danger" asp-validation-for="SignaturePhoto"></span>
+        </div>
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Add title</label>
+            <textarea class="form-control" asp-for="Title"  rows="3" id="sliderTitle"></textarea>
+            <span class="text-danger" asp-validation-for="Title"></span>
+        </div>
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Add description</label>
+            <textarea class="form-control" asp-for="Description" rows="6" id="sliderDesc"></textarea>
+            <span class="text-danger" asp-validation-for="Description"></span>
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+        <button asp-action="Index" class="btn btn-dark">Cancel</button>
+    </form>
+    <div class="back">
+        <a class="btn btn-primary btn-rounded btn-w my-5" asp-action="Index">
+            Go to list
+        </a>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/admin/assets/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("sliderTitle")
+    </script>
+}
+
+

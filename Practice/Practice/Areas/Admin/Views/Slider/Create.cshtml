@@ -1,0 +1,25 @@
+﻿ @model SliderCreateVM
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="container mt-5">
+    <h1>Slider Create</h1>
+    <form class="forms-sample" method="post" asp-action="Create" enctype="multipart/form-data">
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Choose a new image for slider</label>
+            <input class="form-control" id="formFile" asp-for="Photos" >
+            <span class="text-danger" asp-validation-for="Photos">@ViewBag.error</span>
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+        <button asp-action="Index" class="btn btn-dark">Cancel</button>
+    </form>
+    <div class="back">
+        <a class="btn btn-primary btn-rounded btn-w my-5" asp-action="Index">
+           Go to list
+        </a>
+    </div>
+</div>
+
+

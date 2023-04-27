@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Shop";
+}
+<main>
+    <section id="shop-list-title">
+        <div class="container py-4">
+            <div class="row py-5">
+                <div class="col-12">
+                    <h1>Shop List</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="shop-list">
+        <div class="container">
+            <div class="row py-5 parent-products" data-count="@ViewBag.Count" >
+               <partial name="_ProductsPartial"/>
+            </div>
+            <div class="d-flex justify-content-center">
+                <span class="show-more" style=" font-size: 18px; cursor: pointer; color: #f34f3f;font-weight:bold;">Show more...</span>
+                <span class="show-less d-none" style=" font-size: 18px; cursor: pointer; color: #f34f3f;font-weight:bold;">Show Less</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS START -->
+
+    <section id="products">
+        <div class="container">
+            <div class="row py-5">
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <div class="col-sm-6 col-md-4 col-lg-2 mt-3">
+                        <div class="product-item product-item-small text-center" data-id="popular">
+                            <div class="img">
+                                <a href="">
+                                    <img src="img/@category.Image" class="img-fluid" alt="">
+                                </a>
+                            </div>
+                            <div class="title mt-3">
+                                <h6>@category.Name</h6>
+                            </div>
+                            <div class="price">
+                                <span class="text-black-50">$@Model.FirstOrDefault().Price</span>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+               
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS END -->
+
+</main>

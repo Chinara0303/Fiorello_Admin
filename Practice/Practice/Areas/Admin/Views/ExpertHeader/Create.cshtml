@@ -1,0 +1,28 @@
+﻿@model ExpertHeader
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container mt-5">
+    <h1>Create</h1>
+    <form class="forms-sample" asp-action="Create" method="post">
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Add a new title</label>
+            <input class="form-control" type="text" id="formFile" asp-for="Title">
+            <span class="text-danger" asp-validation-for="Title">@ViewBag.error</span>
+        </div>
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Add a new description</label>
+            <input class="form-control" type="text" id="formFile" asp-for="Description">
+            <span class="text-danger" asp-validation-for="Description">@ViewBag.error</span>
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+        <button class="btn btn-dark">Cancel</button>
+    </form>
+    <div class="back">
+        <a class="btn btn-primary btn-rounded btn-w my-5" asp-action="Index">
+            Go to list
+        </a>
+    </div>
+</div>
+

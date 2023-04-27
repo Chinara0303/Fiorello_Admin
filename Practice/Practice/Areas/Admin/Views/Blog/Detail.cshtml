@@ -1,0 +1,36 @@
+﻿@model Blog
+@{
+    ViewData["Title"] = "Detail";
+}
+
+
+<div class="container mt-5">
+    <h1>Detail</h1>
+    <div class="img-detail">
+        <img class="img-fluid" src="~/img/@Model.Image" />
+    </div>
+
+    <form class="forms-sample" method="post" asp-action="Detail">
+        <span class="text-danger" asp-validation-for="Photo">@ViewBag.error</span>
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Title</label>
+            <input style="background-color:black;" class="form-control" type="text" id="formFile" asp-for="Title" disabled="disabled">
+            <span class="text-danger" asp-validation-for="Title"></span>
+        </div>
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Description</label>
+            <input style="background-color:black;" class="form-control" type="text" id="formFile" asp-for="Description" disabled="disabled">
+            <span class="text-danger" asp-validation-for="Description"></span>
+        </div>
+        <div class="form-group mt-5">
+            <label for="formFile" class="form-label">Date</label>
+            <input style="background-color:black;" class="form-control" type="date" id="formFile" asp-for="Date" disabled="disabled">
+            <span class="text-danger" asp-validation-for="Date"></span>
+        </div>
+    </form>
+    <div class="back">
+        <a class="btn btn-primary btn-rounded btn-w my-5" asp-action="Index">
+           Go to list
+        </a>
+    </div>
+</div>

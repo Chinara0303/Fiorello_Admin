@@ -1,0 +1,30 @@
+﻿
+@model ExpertVM
+<section id="experts">
+    <div class="container">
+        <div class="row py-5">
+            <div class="offset-lg-3 col-lg-6">
+                <div class="section-title">
+                    <h1>@Model.ExpertHeader.Title</h1>
+                    <p class="text-black-50">@Model.ExpertHeader.Description</p>
+                </div>
+            </div>
+        </div>
+        <div class="row pb-5">
+            @foreach (var item in Model.ExpertExpertPositions)
+            {
+                <div class="col-md-6 col-lg-3">
+                    <div class="item text-center">
+                        <div class="img">
+                            <img src="~/img/@item.Expert.Image" class="img-fluid rounded-circle" alt="">
+                        </div>
+                        <div class="text mt-3">
+                            <h6>@item.Expert.Name</h6>
+                            <p class="text-black-50">@item.ExpertPosition.Name</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
