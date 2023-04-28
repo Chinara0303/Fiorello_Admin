@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Practice.Areas.Admin.ViewModels;
 using Practice.Data;
@@ -24,10 +25,21 @@ namespace Practice.Areas.Admin.Controllers
             _expertService = expertService;
             _env = env;
         }
-        public async Task<IActionResult> Index() => View(await _expertService.GetAll());
+        public async Task<IActionResult> Index() 
+        {
+            var datas = await _expertService.GetAll();
+            return View(datas);
+        }
 
         [HttpGet]
-        public IActionResult Create() => View();
+        public async Task<IActionResult> Create()
+        {
+            var experts = await _context.Experts.ToListAsync();
+            var expertPositions = await _context.ExpertPositions.ToListAsync();
+            ViewBag.experts = new SelectList(experts,"Id","Name");
+            ViewBag.expertPositions = new SelectList(expertPositions, "Id", "Name");
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -50,19 +62,18 @@ namespace Practice.Areas.Admin.Controllers
 
                 expert.Image = expert.Photo.CreateFile(_env, "img");
 
-                //if (expert.ExpertPositions.Count() > 0)
-                //{
-                //    List<ExpertExpertPosition> positions = new();
-                //    foreach (var item in expert.ExpertPositions)
-                //    {
-                //        ExpertExpertPosition position = new()
-                //        {
-                //        };
-                //        positions.Add(position);
-                //    }
-                //   expert.ExpertPositions = positions;
-                //}
+                Expert newExpert = new()
+                {
+                    Image = expert.Image,
+                };
 
+
+
+
+                foreach (var item in ViewData)
+                {
+
+                }
 
 
                 await _context.Experts.AddAsync(expert);

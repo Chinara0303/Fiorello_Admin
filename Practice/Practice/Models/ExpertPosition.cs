@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Practice.Models
 {
@@ -6,6 +7,9 @@ namespace Practice.Models
     {
         [Required(ErrorMessage = "Don`t be empty")]
         public string Name { get; set; }
-        public IEnumerable<ExpertExpertPosition> ExpertPositions { get; set; } 
+        public List<ExpertExpertPosition> ExpertExpertPositions { get; set; }
+        [NotMapped]
+        public List<int> ExpertIds { get; set; }
+
     }
 }

@@ -1,4 +1,4 @@
-﻿@model ExpertExpertPosition
+﻿@model Expert
 @{
     ViewData["Title"] = "Create";
 }
@@ -9,18 +9,18 @@
     <form class="forms-sample" method="post" asp-action="Create" enctype="multipart/form-data">
         <div class="form-group mt-5">
             <label for="formFile" class="form-label">Choose an image for expert</label>
-            <input class="form-control" type="file" id="formFile" asp-for="@Model.Expert.Photo">
-            <span class="text-danger" asp-validation-for="@Model.Expert.Photo">@ViewBag.error</span>
+            <input class="form-control" type="file" id="formFile" asp-for="@Model.Photo">
+            <span class="text-danger" asp-validation-for="@Model.Photo">@ViewBag.error</span>
         </div>
         <div class="form-group mt-5">
             <label for="formFile" class="form-label">Add expert name</label>
-            <input class="form-control" type="text" id="formFile" asp-for="@Model.Expert.Name">
-            <span class="text-danger" asp-validation-for="@Model.Expert.Name">@ViewBag.error</span>
+            <select class="form-control" asp-items="@ViewBag.experts" asp-for="Name"></select>
+            <span class="text-danger" asp-validation-for="Name">@ViewBag.error</span>
         </div>
         <div class="form-group mt-5">
             <label for="formFile" class="form-label">Add expert position</label>
-            <input class="form-control" type="text" id="formFile" asp-for="@Model.ExpertPosition.Name">
-            <span class="text-danger" asp-validation-for="@Model.ExpertPosition.Name">@ViewBag.error</span>
+            <select class="form-control" asp-items="@ViewBag.expertPositions" asp-for="Name"></select>
+            <span class="text-danger" asp-validation-for="Name">@ViewBag.error</span>
         </div>
         <button type="submit" class="btn btn-primary mr-2">Submit</button>
         <button asp-action="Index" class="btn btn-dark">Cancel</button>

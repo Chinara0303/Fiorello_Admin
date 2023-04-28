@@ -12,7 +12,7 @@ namespace Practice.ViewComponents
             _expertService = expertService;
         }
         public async Task<IViewComponentResult> InvokeAsync() => await Task.FromResult(View(new ExpertVM {
-                                                             ExpertExpertPositions = await _expertService.GetAll(),
+                                                             ExpertExpertPositions = await _expertService.GetAllForExpertExpertPositions(),
                                                              ExpertHeader = await _expertService.GetHeader()}));
 
     }

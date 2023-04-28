@@ -25,7 +25,7 @@ namespace Practice.Areas.Admin.Controllers
             _productService = productService;
             _categoryService = categoryService;
             _env = env;
-            _context = context; 
+            _context = context;
         }
         public async Task<IActionResult> Index(int page = 1, int take = 5)
         {
@@ -64,7 +64,7 @@ namespace Practice.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.categories = await GetCategories();
+            ViewBag.categories = await GetCategoriesAsync();
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace Practice.Areas.Admin.Controllers
         {
             try
             {
-                ViewBag.categories = await GetCategories();
+                ViewBag.categories = await GetCategoriesAsync();
 
                 if (!ModelState.IsValid) return View(model);
 
@@ -127,7 +127,7 @@ namespace Practice.Areas.Admin.Controllers
                 return View();
             }
         }
-        private async Task<SelectList> GetCategories()
+        private async Task<SelectList> GetCategoriesAsync()
         {
             List<Category> categories = await _categoryService.GetAll();
             return new SelectList(categories, "Id", "Name");
@@ -160,6 +160,110 @@ namespace Practice.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id is null) return BadRequest();
+            Product product = await _productService.GetFullDataByIdAsync((int)id);
+            if (product is null) return NotFound();
+
+            ViewBag.categories = await GetCategoriesAsync();
+         
+            ProductUpdateVM model = new()
+            {
+                Name = product.Name,
+                Price = product.Price,
+                CategoryId = product.CategoryId,
+                Description = product.Description,
+                Images = product.Images
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id, ProductUpdateVM model)
+        {
+            try
+            {
+                if (id is null) return BadRequest();
+                Product dbProduct = await _productService.GetFullDataByIdAsync((int)id);
+                if (dbProduct is null) return NotFound();
+
+                ProductUpdateVM product = new()
+                {
+                    Name = dbProduct.Name,
+                    Price = dbProduct.Price,
+                    CategoryId = dbProduct.CategoryId,
+                    Description = dbProduct.Description,
+                    Images = dbProduct.Images
+                };
+
+                ViewBag.categories = await GetCategoriesAsync();
+
+                if (!ModelState.IsValid) return View(product);
+
+                if (model.Photos is not null)
+                {
+                    foreach (var photo in model.Photos)
+                    {
+                        if (!photo.CheckFileType("image/"))
+                        {
+                            ModelState.AddModelError("Photo", "File type must be image");
+                            return View(product);
+                        }
+                        if (!photo.CheckFileSize(200))
+                        {
+                            ModelState.AddModelError("Photo", "Image size must be max 200kb");
+                            return View(product);
+                        }
+                    }
+                    foreach (var item in dbProduct.Images)
+                    {
+                        string oldPath = FileHelper.GetFilePath(_env.WebRootPath, "img", item.Image);
+                        FileHelper.DeleteFile(oldPath);
+                    }
+                 
+                    List<ProductImage> productImages = new();
+
+                    foreach (var photo in model.Photos)
+                    {
+                        ProductImage productImage = new()
+                        {
+                            Image = photo.CreateFile(_env, "img")
+                        };
+                        productImages.Add(productImage);
+                    }
+                   
+                    productImages.FirstOrDefault().IsMain = true;
+                    _context.ProductImages.AddRange(productImages);
+                    dbProduct.Images = productImages;
+
+                }
+                else
+                {
+                    Product newProduct = new();
+                    foreach (var item in dbProduct.Images)
+                    {
+                        newProduct.Images.Add(item);
+                    }
+                } 
+
+                dbProduct.Name = model.Name;
+                dbProduct.Description = model.Description;
+                dbProduct.Price = model.Price;
+                dbProduct.CategoryId = model.CategoryId;
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

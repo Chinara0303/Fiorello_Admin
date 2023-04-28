@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ExpertExpertPosition>
+﻿@model List<Expert>
 @{
     ViewData["Title"] = "Expert";
 }
@@ -25,13 +25,13 @@
                             {
                                 <tr>
                                     <td class="img">
-                                        <img src="~/img/@expert.Expert.Image" />
+                                        <img src="~/img/@expert.Image" />
                                     </td>
                                     <td style="width:100px;">
-                                        @expert.Expert.Name
+                                        @expert.Name
                                     </td>
                                     <td style="width:100px;">
-                                        @expert.ExpertPosition.Name
+                                        @*@expert.ExpertExpertPosition.FirstOrDefault().ExpertPosition.Name*@
                                     </td>
                                     <td>
                                         <a class="btn btn-outline-warning" asp-action="Detail" asp-route-id="@expert.Id">Info</a>

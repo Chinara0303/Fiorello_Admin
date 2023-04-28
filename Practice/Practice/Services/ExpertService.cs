@@ -12,10 +12,15 @@ namespace Practice.Services
         {
             _context = context;
         }
-        public async Task<IEnumerable<ExpertExpertPosition>> GetAll() => await _context.ExpertExpertPositions
-                                                                                        .Include(e => e.Expert)
-                                                                                        .Include(e => e.ExpertPosition)
-                                                                                        .ToListAsync();
+        public async Task<List<Expert>> GetAll() => await _context.Experts
+                                                                    .Include(e => e.ExpertExpertPosition)
+                                                                    .ThenInclude(ep => ep.ExpertPosition)
+                                                                    .ToListAsync();
+
+        public async Task<List<ExpertExpertPosition>> GetAllForExpertExpertPositions()
+        {
+           return await _context.ExpertExpertPositions.Include(ep=>ep.Expert).Include(ep => ep.ExpertPosition).ToListAsync();
+        }
 
         public async Task<ExpertHeader> GetHeader()=> await  _context.ExpertHeaders.FirstOrDefaultAsync();
 
