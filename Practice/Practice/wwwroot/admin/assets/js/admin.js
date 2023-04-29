@@ -164,4 +164,42 @@
         })
     })
 
+    //remove delete product image from edit view 
+    $(document).on("click", ".delete-prodimage", function () {
+        let deleteItem = $(this).parent().parent();
+        let prodImageId = $(this).parent().attr("data-id");
+        var url = `/Admin/Product/DeleteImage?id=${prodImageId}`;
+      
+        $.ajax({
+            url: url,
+            type: "Post",
+            success: function () {
+                $(deleteItem).remove();
+            }
+        })
+    })
+    //status product img
+    $(document).on("click", ".prodImage-status", function () {
+        let prodImageId = $(this).parent().parent().attr("data-id");
+        let changeElem = $(this);
+        console.log($(prodImageId))
+        let url = `/Admin/Product/SetStatus?id=${prodImageId}`;
+        debugger
+        $.ajax({
+            url: url,
+            type: "Post",
+            success: function (res) {
+                if (res) {
+                    debugger
+                    $(changeElem).removeClass("active-status");
+                    $(changeElem).addClass("de-active");
+                }
+                else {
+                    debugger
+                    $(changeElem).addClass("active-status")
+                    $(changeElem).removeClass("de-active")
+                }
+            }
+        })
+    })
 });

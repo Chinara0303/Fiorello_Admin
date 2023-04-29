@@ -27,6 +27,7 @@ namespace Practice.Areas.Admin.Controllers
             _env = env;
             _context = context;
         }
+
         public async Task<IActionResult> Index(int page = 1, int take = 5)
         {
             List<Product> datas = await _productService.GetPaginatedDatasAsync(page, take);
@@ -54,7 +55,7 @@ namespace Practice.Areas.Admin.Controllers
                     Name = product.Name,
                     Price = product.Price,
                     CategoryName = product.Category.Name,
-                    Image = product.Images.Where(p => p.IsMain).FirstOrDefault().Image
+                    Image = product.Images.Where(i=>i.IsMain).FirstOrDefault()?.Image
                 };
                 mappedDatas.Add(productList);
             }
@@ -170,7 +171,7 @@ namespace Practice.Areas.Admin.Controllers
             if (product is null) return NotFound();
 
             ViewBag.categories = await GetCategoriesAsync();
-         
+
             ProductUpdateVM model = new()
             {
                 Name = product.Name,
@@ -179,6 +180,7 @@ namespace Practice.Areas.Admin.Controllers
                 Description = product.Description,
                 Images = product.Images
             };
+
             return View(model);
         }
 
@@ -205,8 +207,16 @@ namespace Practice.Areas.Admin.Controllers
 
                 if (!ModelState.IsValid) return View(product);
 
+                int canUploadImg = 5 - (int)product.Images?.Where(i=>!i.SoftDelete).Count();
+                
+             
                 if (model.Photos is not null)
                 {
+                    if (model.Photos.Count() > canUploadImg)
+                    {
+                        ModelState.AddModelError("Photos", $"The maximum number of images you can upload is {canUploadImg}");
+                        return View(product);
+                    }
                     foreach (var photo in model.Photos)
                     {
                         if (!photo.CheckFileType("image/"))
@@ -220,13 +230,6 @@ namespace Practice.Areas.Admin.Controllers
                             return View(product);
                         }
                     }
-                    foreach (var item in dbProduct.Images)
-                    {
-                        string oldPath = FileHelper.GetFilePath(_env.WebRootPath, "img", item.Image);
-                        FileHelper.DeleteFile(oldPath);
-                    }
-                 
-                    List<ProductImage> productImages = new();
 
                     foreach (var photo in model.Photos)
                     {
@@ -234,22 +237,23 @@ namespace Practice.Areas.Admin.Controllers
                         {
                             Image = photo.CreateFile(_env, "img")
                         };
-                        productImages.Add(productImage);
-                    }
-                   
-                    productImages.FirstOrDefault().IsMain = true;
-                    _context.ProductImages.AddRange(productImages);
-                    dbProduct.Images = productImages;
 
+                        dbProduct.Images.Add(productImage);
+                        product.Images.Add(productImage);
+                    }
+                    dbProduct.Images.FirstOrDefault().IsMain = true;
                 }
                 else
                 {
-                    Product newProduct = new();
+
                     foreach (var item in dbProduct.Images)
                     {
-                        newProduct.Images.Add(item);
+                        ProductImage newProductImage = new()
+                        {
+                            Image = item.Image
+                        };
                     }
-                } 
+                }
 
                 dbProduct.Name = model.Name;
                 dbProduct.Description = model.Description;
@@ -257,13 +261,56 @@ namespace Practice.Areas.Admin.Controllers
                 dbProduct.CategoryId = model.CategoryId;
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
 
             catch (Exception ex)
             {
-                throw;
+                ViewBag.error = ex.Message;
+                return View();
             }
+        }
+        public async Task<IActionResult> DeleteImage(int? id)
+        {
+            if (id is null) return BadRequest();
+            var image = _context.ProductImages.FirstOrDefault(pi => pi.Id == id);
+            if (image is null) return NotFound();
+
+            var dbProduct = await _context.Products
+                .Include(p=>p.Images)
+                .Include(p=>p.Category)
+                .FirstOrDefaultAsync(p=>p.Images.Any(pi=>pi.Id == id));
+
+            string path = FileHelper.GetFilePath(_env.WebRootPath, "img", image.Image);
+            FileHelper.DeleteFile(path);
+            _context.ProductImages.Remove(image);
+
+            ProductUpdateVM model = new()
+            {
+                Name = dbProduct.Name,
+                Price = dbProduct.Price,
+                CategoryId = dbProduct.CategoryId,
+                Description = dbProduct.Description,
+                Images = dbProduct.Images
+            };
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetStatus(int? id)
+        {
+            if (id == null) return BadRequest();
+            var image =  _context.ProductImages.FirstOrDefault(pi => pi.Id == id);
+
+            if (image is null) return NotFound();
+
+            image.IsMain = !image.IsMain;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(image.IsMain);
         }
     }
 }
