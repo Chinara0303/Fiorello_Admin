@@ -39,6 +39,7 @@ namespace Practice.Areas.Admin.Controllers
 
             return View(paginatedDatas);
         }
+      
         private async Task<int> GetPageCountAsync(int take)
         {
             var productCount = await _productService.GetCountAsync();
@@ -55,7 +56,7 @@ namespace Practice.Areas.Admin.Controllers
                     Name = product.Name,
                     Price = product.Price,
                     CategoryName = product.Category.Name,
-                    Image = product.Images.Where(i=>i.IsMain).FirstOrDefault()?.Image
+                    Image = product.Images.Where(i => i.IsMain).FirstOrDefault()?.Image
                 };
                 mappedDatas.Add(productList);
             }
@@ -178,7 +179,7 @@ namespace Practice.Areas.Admin.Controllers
                 Price = product.Price,
                 CategoryId = product.CategoryId,
                 Description = product.Description,
-                Images = product.Images
+                Images = product.Images //sehv yoldur
             };
 
             return View(model);
@@ -193,23 +194,32 @@ namespace Practice.Areas.Admin.Controllers
                 if (id is null) return BadRequest();
                 Product dbProduct = await _productService.GetFullDataByIdAsync((int)id);
                 if (dbProduct is null) return NotFound();
+              
+                List<ProductImage> productImages = new();
 
+                foreach (var item in dbProduct.Images)
+                {
+                    ProductImage image = new()
+                    {
+                        Image = item.Image
+                    };
+                    productImages.Add(image);
+                }
                 ProductUpdateVM product = new()
                 {
                     Name = dbProduct.Name,
                     Price = dbProduct.Price,
                     CategoryId = dbProduct.CategoryId,
                     Description = dbProduct.Description,
-                    Images = dbProduct.Images
+                    Images = productImages
                 };
 
                 ViewBag.categories = await GetCategoriesAsync();
 
                 if (!ModelState.IsValid) return View(product);
 
-                int canUploadImg = 5 - (int)product.Images?.Where(i=>!i.SoftDelete).Count();
-                
-             
+                int canUploadImg = 5 - (int)product.Images?.Where(i => !i.SoftDelete).Count();
+
                 if (model.Photos is not null)
                 {
                     if (model.Photos.Count() > canUploadImg)
@@ -239,13 +249,11 @@ namespace Practice.Areas.Admin.Controllers
                         };
 
                         dbProduct.Images.Add(productImage);
-                        product.Images.Add(productImage);
                     }
                     dbProduct.Images.FirstOrDefault().IsMain = true;
                 }
                 else
                 {
-
                     foreach (var item in dbProduct.Images)
                     {
                         ProductImage newProductImage = new()
@@ -270,29 +278,18 @@ namespace Practice.Areas.Admin.Controllers
                 return View();
             }
         }
+
+        [HttpPost]
         public async Task<IActionResult> DeleteImage(int? id)
         {
             if (id is null) return BadRequest();
             var image = _context.ProductImages.FirstOrDefault(pi => pi.Id == id);
             if (image is null) return NotFound();
 
-            var dbProduct = await _context.Products
-                .Include(p=>p.Images)
-                .Include(p=>p.Category)
-                .FirstOrDefaultAsync(p=>p.Images.Any(pi=>pi.Id == id));
-
             string path = FileHelper.GetFilePath(_env.WebRootPath, "img", image.Image);
             FileHelper.DeleteFile(path);
             _context.ProductImages.Remove(image);
 
-            ProductUpdateVM model = new()
-            {
-                Name = dbProduct.Name,
-                Price = dbProduct.Price,
-                CategoryId = dbProduct.CategoryId,
-                Description = dbProduct.Description,
-                Images = dbProduct.Images
-            };
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -302,7 +299,7 @@ namespace Practice.Areas.Admin.Controllers
         public async Task<IActionResult> SetStatus(int? id)
         {
             if (id == null) return BadRequest();
-            var image =  _context.ProductImages.FirstOrDefault(pi => pi.Id == id);
+            var image = _context.ProductImages.FirstOrDefault(pi => pi.Id == id);
 
             if (image is null) return NotFound();
 

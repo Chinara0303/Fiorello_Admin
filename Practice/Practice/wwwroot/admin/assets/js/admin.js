@@ -178,26 +178,28 @@
             }
         })
     })
+
     //status product img
-    $(document).on("click", ".prodImage-status", function () {
+    $(document).on("click", ".statuses .prodImage-status", function () {
         let prodImageId = $(this).parent().parent().attr("data-id");
         let changeElem = $(this);
-        console.log($(prodImageId))
-        let url = `/Admin/Product/SetStatus?id=${prodImageId}`;
-        debugger
         $.ajax({
-            url: url,
+            url: `/Admin/Product/SetStatus?id=${prodImageId}`,
             type: "Post",
             success: function (res) {
                 if (res) {
-                    debugger
-                    $(changeElem).removeClass("active-status");
-                    $(changeElem).addClass("de-active");
+                    if ($(changeElem).hasClass("de-active")) {
+
+                        $(changeElem).removeClass("de-active");
+                        $(changeElem).addClass("active-status");
+                    }
                 }
                 else {
-                    debugger
-                    $(changeElem).addClass("active-status")
-                    $(changeElem).removeClass("de-active")
+                    if ($(changeElem).hasClass("active-status")) {
+
+                        $(changeElem).removeClass("active-status");
+                        $(changeElem).addClass("de-active");
+                    }
                 }
             }
         })
