@@ -16,7 +16,7 @@
                             <tr>
                                 <th> Image </th>
                                 <th> Name </th>
-                                <th> Position </th>
+                              @*  <th> Position </th>*@
                                 <th> Operations </th>
                             </tr>
                         </thead>
@@ -30,9 +30,9 @@
                                     <td style="width:100px;">
                                         @expert.Name
                                     </td>
-                                    <td style="width:100px;">
-                                        @*@expert.ExpertExpertPosition.FirstOrDefault().ExpertPosition.Name*@
-                                    </td>
+                                   @* <td style="width:100px;">
+                                        expert.ExpertExpertPosition.FirstOrDefault().ExpertPosition.Name
+                                    </td>*@
                                     <td>
                                         <a class="btn btn-outline-warning" asp-action="Detail" asp-route-id="@expert.Id">Info</a>
                                         <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@expert.Id">Edit</a>

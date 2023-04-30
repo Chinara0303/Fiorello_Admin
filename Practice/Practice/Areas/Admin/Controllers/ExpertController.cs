@@ -32,12 +32,12 @@ namespace Practice.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var experts = await _context.Experts.ToListAsync();
-            var expertPositions = await _context.ExpertPositions.ToListAsync();
-            ViewBag.experts = new SelectList(experts,"Id","Name");
-            ViewBag.expertPositions = new SelectList(expertPositions, "Id", "Name");
+            //var experts = await _context.Experts.ToListAsync();
+            //var expertPositions = await _context.ExpertPositions.ToListAsync();
+            //ViewBag.experts = new SelectList(experts,"Id","Name");
+            //ViewBag.expertPositions = new SelectList(expertPositions, "Id", "Name");
             return View();
         }
 
@@ -66,15 +66,6 @@ namespace Practice.Areas.Admin.Controllers
                 {
                     Image = expert.Image,
                 };
-
-
-
-
-                foreach (var item in ViewData)
-                {
-
-                }
-
 
                 await _context.Experts.AddAsync(expert);
                 await _context.SaveChangesAsync();

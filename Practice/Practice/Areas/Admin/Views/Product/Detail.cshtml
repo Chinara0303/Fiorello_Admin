@@ -1,0 +1,40 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div class="container mt-5">
+    <h1>Create</h1>
+    <div class="d-flex align-items-center">
+        @foreach (var item in Model.Images)
+        {
+            <div style="width:200px; margin-right:10px;">
+            <img class="img-fluid" src="~/img/@item.Image" />
+            </div>
+        }
+    </div>
+    <div class="form-group mt-5">
+        <label for="formFile" class="form-label">Name</label>
+        <input class="form-control bg-dark" disabled id="formFile" asp-for="Name">
+    </div>
+    <div class="form-group mt-5">
+        <label for="formFile" class="form-label">Description</label>
+        <textarea class="form-control bg-dark" disabled id="formFile" asp-for="Description" rows="6"></textarea>
+    </div>
+    <div class="form-group mt-5">
+        <label for="formFile" class="form-label">Price</label>
+        <input class="form-control bg-dark" disabled type="text" id="formFile" asp-for="Price" />
+    </div>
+    <div class="form-group mt-5">
+        <label for="formFile" class="form-label">Category</label>
+        <input class="form-control bg-dark" disabled id="formFile" asp-for="Category.Name" />
+    </div>
+    <div class="back">
+        <a class="btn btn-primary btn-rounded btn-w my-5" asp-action="Index">
+            Go to list
+        </a>
+    </div>
+</div>
+
+
+

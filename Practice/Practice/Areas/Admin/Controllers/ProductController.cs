@@ -39,7 +39,7 @@ namespace Practice.Areas.Admin.Controllers
 
             return View(paginatedDatas);
         }
-      
+
         private async Task<int> GetPageCountAsync(int take)
         {
             var productCount = await _productService.GetCountAsync();
@@ -194,7 +194,7 @@ namespace Practice.Areas.Admin.Controllers
                 if (id is null) return BadRequest();
                 Product dbProduct = await _productService.GetFullDataByIdAsync((int)id);
                 if (dbProduct is null) return NotFound();
-              
+
                 List<ProductImage> productImages = new();
 
                 foreach (var item in dbProduct.Images)
@@ -308,6 +308,19 @@ namespace Practice.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(image.IsMain);
+        }
+
+
+        public async Task<IActionResult> Detail(int? id)
+        {
+
+            if (id is null) return BadRequest();
+            Product product = await _productService.GetFullDataByIdAsync((int)id);
+            if (product is null) return NotFound();
+
+            return View(product);
+
+
         }
     }
 }
